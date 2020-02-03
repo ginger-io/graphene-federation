@@ -8,8 +8,8 @@ from .entity import custom_entities
 
 
 def _mark_field(
-        entity_name, entity, schema: str, mark_attr_name: str,
-        decorator_resolver: callable, auto_camelcase: bool
+        entity_name, entity, schema, mark_attr_name,
+        decorator_resolver, auto_camelcase
 ):
     for field_name in dir(entity):
         field = getattr(entity, field_name, None)
@@ -20,7 +20,7 @@ def _mark_field(
                 r"(type\s%s\s[^\{]*\{[^\}]*\s%s[\s]*:[\s]*[^\s]+)(\s)" % (
                     entity_name, schema_field_name))
             schema = pattern.sub(
-                rf'\g<1> {decorator_resolver(getattr(field, mark_attr_name))} ', schema)
+                r'\g<1> {} '.format(decorator_resolver(getattr(field, mark_attr_name))), schema)
 
     return schema
 
@@ -32,7 +32,7 @@ def _mark_external(entity_name, entity, schema, auto_camelcase):
 
 def _mark_requires(entity_name, entity, schema, auto_camelcase):
     return _mark_field(
-        entity_name, entity, schema, '_requires', lambda fields: f'@requires(fields: "{fields}")',
+        entity_name, entity, schema, '_requires', lambda fields: '@requires(fields: "{fields}")'.format(fields=fields),
         auto_camelcase
     )
 

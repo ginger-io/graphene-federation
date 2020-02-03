@@ -6,7 +6,7 @@ def register_extend_type(typename, Type):
     extended_types[typename] = Type
 
 
-def extend(fields: str):
+def extend(fields):
     def decorator(Type):
         if hasattr(Type, '_sdl'):
             raise RuntimeError("Can't extend type which is already extended or has @key")
@@ -22,6 +22,6 @@ def external(field):
     return field
 
 
-def requires(field, fields: str):
+def requires(field, fields):
     field._requires = fields
     return field
